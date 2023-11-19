@@ -1,9 +1,11 @@
 #C:\flask_dev\flaskreact\app.py
-from flask import Flask, request, jsonify, session
+from flask import Flask, request, jsonify, session,render_template
 from flask_bcrypt import Bcrypt #pip install Flask-Bcrypt = https://pypi.org/project/Flask-Bcrypt/
 from flask_cors import CORS, cross_origin #ModuleNotFoundError: No module named 'flask_cors' = pip install Flask-Cors
 from models import db, User
- 
+import joblib
+import pandas as pd
+
 app = Flask(__name__)
  
 app.config['SECRET_KEY'] = 'surya'
@@ -62,9 +64,27 @@ def login_user():
       
     session["user_id"] = user.id
   
+    # return render_template('predict.html')  #check for this here if not comming
     return jsonify({
         "id": user.id,
         "email": user.email
+    })
+@app.route("/predict",methods=['POST'])
+def do_predict():
+    respred=request.json["respred"]
+    #losding saved model here in this python file
+    model=joblib.load('model/price_model.pkl')
+    #creating dataframe of JSON data
+    df=pd.DataFrame(respred)
+    from sklearn.preprocessing import StandardScaler
+    #preforming preprocessing steps
+    scaler=StandardScaler()
+    x_scaled =scaler.transform(df)
+    x_scaled =pd.DataFrame(x_scaled,columns=df.columns)
+    y_predict =model.predict(x_scaled)
+    res={"Predicted Price of House":y_predict[0]}
+    return jsonify({
+        res
     })
  
 if __name__ == "__main__":

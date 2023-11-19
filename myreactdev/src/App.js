@@ -7,6 +7,7 @@ import {BrowserRouter, Routes, Route, Link} from 'react-router-dom';
 import LandingPage from "./pages/LandingPage";
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
+import ML_model from './pages/ML_model'
  
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
             <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
+            <Route path="/ml_model" element={<ML_model />} />
         </Routes>
       </BrowserRouter>
     </div>

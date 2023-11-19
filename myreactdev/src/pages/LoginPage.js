@@ -25,7 +25,7 @@ export default function LoginPage(){
             .then(function (response) {
                 console.log(response);
                 //console.log(response.data);
-                navigate("/");
+                navigate("/ml_model"); //check once if error arise
             })
             .catch(function (error) {
                 console.log(error, 'error');
@@ -77,6 +77,8 @@ export default function LoginPage(){
  
                   <div className="text-center text-lg-start mt-4 pt-2">
                     <button type="button" className="btn btn-primary btn-lg" onClick={logInUser} >Login</button>
+                    {/* <p><Link to="/ml_model" className="btn btn-success">Login</Link> </p> */}
+                    <p className="small fw-bold mt-2 pt-1 mb-0">Wnat to predict? <a href="/ml_model" className="link-danger">Predict</a></p>
                     <p className="small fw-bold mt-2 pt-1 mb-0">Don't have an account? <a href="/register" className="link-danger">Register</a></p>
                   </div>
  
