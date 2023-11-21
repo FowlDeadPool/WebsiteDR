@@ -8,12 +8,11 @@ import LandingPage from "./pages/LandingPage";
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import ML_model from './pages/ML_model'
- 
+
 function App() {
   return (
     <div className="vh-100 gradient-custom">
     <div className="container">
-      <h1 className="page-header text-center">React and Python Flask Login Register</h1>
    
       <BrowserRouter>
         <Routes>
