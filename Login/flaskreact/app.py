@@ -19,7 +19,8 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'surya'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///flaskdb.db'
 # Model saved with Keras model.save()
-MODEL_PATH = './models/pretrained/model.h5' 
+MODEL_PATH = "D:\\DR\\dr website\\WebsiteDR\\Login\\flaskreact\\models_\\pretrained\\pretrained\\model.h5"
+
 
 # Loading trained model
 model = build_model()
@@ -116,10 +117,10 @@ def predict():
     if request.method == 'POST':
         # Get the image from post request
         img = pybase64.b64decode((request.json))
-        # img = base64_to_pil(request.json)
+        img = base64_to_pil(request.json)
 
         # Save the image to ./uploads
-        # img.save("./uploads/image.png")
+        img.save('./uploads/image.jpeg')
 
         # Make prediction on the image
         preds = model_predict(img, model)

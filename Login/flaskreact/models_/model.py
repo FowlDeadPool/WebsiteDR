@@ -28,7 +28,7 @@ def build_model():
     Model weights are saved in file DenseNet-BC-121-32-no-top.h5
     """
     densenet = DenseNet121(
-        weights="models_/pretrained/DenseNet-BC-121-32-no-top.h5",
+        weights="D:\\DR\\dr website\\WebsiteDR\\Login\\flaskreact\\models_\\pretrained\\pretrained\\DenseNet-BC-121-32-no-top.h5",
         include_top=False,
         input_shape=(224, 224, 3),
     )
