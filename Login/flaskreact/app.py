@@ -5,12 +5,26 @@ from flask_cors import CORS, cross_origin #ModuleNotFoundError: No module named 
 from models import db, User
 import joblib
 import pandas as pd
+from gevent.pywsgi import WSGIServer
+
+from PIL import Image
+import numpy as np
+# from utils import base64_to_pil  #has problemo
+import pybase64
+from models_.model import build_model
+# from 
 
 app = Flask(__name__)
  
 app.config['SECRET_KEY'] = 'surya'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///flaskdb.db'
- 
+# Model saved with Keras model.save()
+MODEL_PATH = './models/pretrained/model.h5' 
+
+# Loading trained model
+model = build_model()
+model.load_weights(MODEL_PATH)
+print('Model loaded. Start serving...')
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 SQLALCHEMY_ECHO = True
   
@@ -20,6 +34,34 @@ db.init_app(app)
   
 with app.app_context():
     db.create_all()
+
+def model_predict(img, model):
+    """
+    Classify the severity of DR of image using pre-trained CNN model.
+
+    Keyword arguments:
+    img -- the retinal image to be classified
+    model -- the pretrained CNN model used for prediction
+
+    Predicted rating of severity of diabetic retinopathy on a scale of 0 to 4:
+
+    0 - No DR
+    1 - Mild
+    2 - Moderate
+    3 - Severe
+    4 - Proliferative DR
+
+    """
+    
+    ## Preprocessing the image
+    x_val = np.empty((1, 224, 224, 3), dtype=np.uint8)
+    img = img.resize((224,) * 2, resample=Image.LANCZOS)
+    x_val[0, :, :, :] = img
+
+    preds = model.predict(x_val)
+    return preds
+
+
  
 @app.route("/")
 def hello_world():
@@ -69,37 +111,62 @@ def login_user():
         "id": user.id,
         "email": user.email
     })
-@app.route("/predict", methods=['POST'])
-def do_predict():
-    try:
-        respred = request.json["respred"]
-        # Load the saved model
-        model = joblib.load('model/price_model.pkl')
+@app.route("/predict", methods=['GET','POST'])
+def predict():
+    if request.method == 'POST':
+        # Get the image from post request
+        img = pybase64.b64decode((request.json))
+        # img = base64_to_pil(request.json)
+
+        # Save the image to ./uploads
+        # img.save("./uploads/image.png")
+
+        # Make prediction on the image
+        preds = model_predict(img, model)
+
+        # Process result to find probability and class of prediction
+        pred_proba = "{:.3f}".format(np.amax(preds))    # Max probability
+        pred_class = np.argmax(np.squeeze(preds))
+
+        diagnosis = ["No DR", "Mild", "Moderate", "Severe", "Proliferative DR"]
+
+        result = diagnosis[pred_class]               # Convert to string
         
-        # Create a DataFrame from JSON data
-        df = pd.DataFrame(respred)
+        # Serialize the result
+        return jsonify(result=result, probability=pred_proba)
+
+    return None
+    # try:
+    #     respred = request.json["respred"]
+    #     # Load the saved model
+    #     model = joblib.load('model/price_model.pkl')
         
-        # Load the scaler used during training
-        scaler = joblib.load('model/scaler.pkl')
+    #     # Create a DataFrame from JSON data
+    #     df = pd.DataFrame(respred)
         
-        # Preprocess the data
-        x_scaled = scaler.transform(df)
-        x_scaled = pd.DataFrame(x_scaled, columns=df.columns)
+    #     # Load the scaler used during training
+    #     scaler = joblib.load('model/scaler.pkl')
         
-        # Make predictions
-        y_predict = model.predict(x_scaled)
-        predicted_price = y_predict[0]
+    #     # Preprocess the data
+    #     x_scaled = scaler.transform(df)
+    #     x_scaled = pd.DataFrame(x_scaled, columns=df.columns)
         
-        res = {"Predicted Price of House": predicted_price}
-        return jsonify(res), 200
+    #     # Make predictions
+    #     y_predict = model.predict(x_scaled)
+    #     predicted_price = y_predict[0]
+        
+    #     res = {"Predicted Price of House": predicted_price}
+    #     return jsonify(res), 200
     
-    except KeyError as e:
-        error = {"error": f"KeyError: {str(e)}"}
-        return jsonify(error), 400
+    # except KeyError as e:
+    #     error = {"error": f"KeyError: {str(e)}"}
+    #     return jsonify(error), 400
     
-    except Exception as e:
-        error = {"error": f"An error occurred: {str(e)}"}
-        return jsonify(error), 500
+    # except Exception as e:
+    #     error = {"error": f"An error occurred: {str(e)}"}
+    #     return jsonify(error), 500
  
 if __name__ == "__main__":
-    app.run(debug=True)
+    #app.run(debug=True)
+    http_server = WSGIServer(('0.0.0.0', 5000), app)
+    http_server.serve_forever()
