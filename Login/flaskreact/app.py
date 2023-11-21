@@ -69,23 +69,37 @@ def login_user():
         "id": user.id,
         "email": user.email
     })
-@app.route("/predict",methods=['POST'])
+@app.route("/predict", methods=['POST'])
 def do_predict():
-    respred=request.json["respred"]
-    #losding saved model here in this python file
-    model=joblib.load('model/price_model.pkl')
-    #creating dataframe of JSON data
-    df=pd.DataFrame(respred)
-    from sklearn.preprocessing import StandardScaler
-    #preforming preprocessing steps
-    scaler=StandardScaler()
-    x_scaled =scaler.transform(df)
-    x_scaled =pd.DataFrame(x_scaled,columns=df.columns)
-    y_predict =model.predict(x_scaled)
-    res={"Predicted Price of House":y_predict[0]}
-    return jsonify({
-        res
-    })
+    try:
+        respred = request.json["respred"]
+        # Load the saved model
+        model = joblib.load('model/price_model.pkl')
+        
+        # Create a DataFrame from JSON data
+        df = pd.DataFrame(respred)
+        
+        # Load the scaler used during training
+        scaler = joblib.load('model/scaler.pkl')
+        
+        # Preprocess the data
+        x_scaled = scaler.transform(df)
+        x_scaled = pd.DataFrame(x_scaled, columns=df.columns)
+        
+        # Make predictions
+        y_predict = model.predict(x_scaled)
+        predicted_price = y_predict[0]
+        
+        res = {"Predicted Price of House": predicted_price}
+        return jsonify(res), 200
+    
+    except KeyError as e:
+        error = {"error": f"KeyError: {str(e)}"}
+        return jsonify(error), 400
+    
+    except Exception as e:
+        error = {"error": f"An error occurred: {str(e)}"}
+        return jsonify(error), 500
  
 if __name__ == "__main__":
     app.run(debug=True)

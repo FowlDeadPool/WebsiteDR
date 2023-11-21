@@ -6,7 +6,7 @@ export default function ML_model(){
     const [respred,setrespred] = useState('');
     const navigate = useNavigate();
     const model_predict = () => {
-        axios.post('http://127.0.0.1:5000/predict' ,{
+        axios.post('http://127.0.0.1:5000/app.py' ,{
             respred: respred
         })
         .then(function (response) {
@@ -26,3 +26,6 @@ export default function ML_model(){
     </div>
     );
 }
+
+
+

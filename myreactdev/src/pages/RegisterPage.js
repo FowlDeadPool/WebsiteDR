@@ -39,18 +39,20 @@ export default function RegisterPage(){
               <div className="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
                 <form>
                   <div className="d-flex flex-row align-items-center justify-content-center justify-content-lg-start">
-                    <p className="lead fw-normal mb-0 me-3">Create Your Account</p>
+                    <p className="lead-fw-normal-mb-0-me-3">Create Your Account</p>
                   </div>
  
                   <div className="form-outline mb-4">
+                  <label className="form-label-1" for="form3Example3">Email address</label>
                     <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} id="form3Example3" className="form-control form-control-lg" placeholder="Enter a valid email address" />
-                    <label className="form-label" for="form3Example3">Email address</label>
+                    
                   </div>
  
              
                   <div className="form-outline mb-3">
+                  <label className="form-label-2" for="form3Example4">Password</label>
                     <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} id="form3Example4" className="form-control form-control-lg" placeholder="Enter password" />
-                    <label className="form-label" for="form3Example4">Password</label>
+                    
                   </div>
  
                   <div className="d-flex justify-content-between align-items-center">
@@ -60,7 +62,6 @@ export default function RegisterPage(){
                         Remember me
                       </label>
                     </div>
-                    <a href="#!" className="text-body">Forgot password?</a>
                   </div>
  
                   <div className="text-center text-lg-start mt-4 pt-2">
