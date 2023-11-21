@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import axios from 'axios';
 import './LoginPage.css';
 import {useNavigate} from "react-router-dom"; 
+import { GoogleOAuthProvider,GoogleLogin } from '@react-oauth/google';
+import { jwtDecode } from "jwt-decode";
 export default function LoginPage(){
  
     const [email,setEmail] = useState('');
@@ -75,6 +77,16 @@ export default function LoginPage(){
                       </label>
                     </div>
                     <a href="#!" className="text-body">Forgot password?</a>
+                  </div>
+                  <div>
+                  <GoogleOAuthProvider clientId="385505748878-64gn9k87j10tgn4qtl7ft8vlci8modj7.apps.googleusercontent.com">
+                  <GoogleLogin 
+                  onSuccess={credentialResponse => {
+                    console.log(jwtDecode(credentialResponse.credential));
+                  }}
+                  onError={() => {
+                     console.log('Login Failed');  }}/>;                    
+                  </GoogleOAuthProvider>;
                   </div>
  
                   <div className="text-center text-lg-start mt-4 pt-2">
