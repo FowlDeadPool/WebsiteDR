@@ -9,8 +9,8 @@ from gevent.pywsgi import WSGIServer
 
 from PIL import Image
 import numpy as np
-# from utils import base64_to_pil  #has problemo
-import pybase64
+from utils import base64_to_pil  #has problemo
+# import pybase64
 from models_.model import build_model
 # from 
 
@@ -19,8 +19,8 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'surya'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///flaskdb.db'
 # Model saved with Keras model.save()
-MODEL_PATH = "D:\\DR\\dr website\\WebsiteDR\\Login\\flaskreact\\models_\\pretrained\\pretrained\\model.h5"
-
+MODEL_PATH = "E://bsury//Summer Vacation//Smart_Project//WebsiteDR//Login//flaskreact//models_//pretrained//pretrained//model.h5"
+#E://bsury//Summer Vacation//Smart_Project//WebsiteDR//Login//flaskreact//models_//pretrained//pretrained//model.h5
 
 # Loading trained model
 model = build_model()
@@ -116,7 +116,7 @@ def login_user():
 def predict():
     if request.method == 'POST':
         # Get the image from post request
-        img = pybase64.b64decode((request.json))
+        # img = pybase64.b64decode((request.json))
         img = base64_to_pil(request.json)
 
         # Save the image to ./uploads

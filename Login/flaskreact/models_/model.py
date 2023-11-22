@@ -28,7 +28,7 @@ def build_model():
     Model weights are saved in file DenseNet-BC-121-32-no-top.h5
     """
     densenet = DenseNet121(
-        weights="D:\\DR\\dr website\\WebsiteDR\\Login\\flaskreact\\models_\\pretrained\\pretrained\\DenseNet-BC-121-32-no-top.h5",
+        weights="E://bsury//Summer Vacation//Smart_Project//WebsiteDR//Login//flaskreact//models_//pretrained//pretrained//DenseNet-BC-121-32-no-top.h5",
         include_top=False,
         input_shape=(224, 224, 3),
     )
@@ -63,7 +63,7 @@ def classify_image(img):
     # Build model used for classification
     # Load weights from pretrained model
     model = build_model()
-    model.load_weights("models_/pretrained/model.h5")
+    model.load_weights("E://bsury//Summer Vacation//Smart_Project//WebsiteDR//Login//flaskreact//models_//pretrained//pretrained//model.h5")
 
     # Create preprocessed image to be evaluated and predict its class
     x_val = np.empty((1, 224, 224, 3), dtype=np.uint8)
